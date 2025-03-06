@@ -1,0 +1,14 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <label for="room">Selecione uma sala</label>
+  <select id="room" type="text" formControlName="room">
+    <option value="" selected></option>
+
+    @for (room of roomList.values(); track $index) {
+      <option [value]="room">{{ room }}</option>
+    }
+  </select>
+
+  <button class="btn" type="submit" [disabled]="form.invalid">Participar</button>
+
+  <!-- <button class="btn-outline" (click)="createRoom()">Sala instantânea</button> -->
+</form>

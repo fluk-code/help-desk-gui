@@ -1,0 +1,71 @@
+$header-height: 40px;
+$footer-height: 20px;
+
+header {
+  height: $header-height;
+}
+
+footer {
+  height: $footer-height;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 0.5fr 3fr 1.25fr 0.75fr; /* Screen ocupa 3 partes, Players ocupa 1 parte */
+  grid-template-rows: 1fr auto; /* Screen ocupa toda a altura, chat se auto ajusta */
+  grid-template-areas: 'rooms screen chat players';
+  height: calc(
+    100vh - $header-height - $footer-height
+  ); /* Garante que o grid ocupa toda a altura da tela */
+
+  .rooms {
+    grid-area: rooms;
+    background-color: #ddd; /* Apenas para visualização */
+    border: 1px solid #ccc; /* Apenas para visualização */
+  }
+
+  .screen {
+    grid-area: screen;
+    background-color: #eee; /* Apenas para visualização */
+    border: 1px solid #ccc; /* Apenas para visualização */
+
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    .screen__share {
+      flex-grow: 1;
+      background-color: #eee;
+    }
+
+    .screen__control {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+
+      padding: 0.5rem;
+
+      // background-color: #ccc;
+    }
+  }
+
+  .players {
+    grid-area: players;
+    background-color: #ddd; /* Apenas para visualização */
+    border: 1px solid #ccc; /* Apenas para visualização */
+  }
+
+  .chat {
+    grid-area: chat;
+    background-color: #ccc; /* Apenas para visualização */
+    border: 1px solid #ccc; /* Apenas para visualização */
+  }
+}
+
+video {
+  width: 100%;
+  height: 100%;
+}

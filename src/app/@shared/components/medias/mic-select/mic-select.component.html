@@ -1,0 +1,14 @@
+<fk-device-dropdown
+  [devices]="audioDevices"
+  [deviceIdSelected]="deviceIdSelected"
+  (chanceDevice)="selectAudioDevice($event)"
+>
+  <button class="btn-flat midia-stream__mic" (click)="toggleDisableAudio()">
+    <i
+      [ngClass]="{
+        mic: !isDisabled,
+        mic_off: isDisabled,
+      }"
+    ></i>
+  </button>
+</fk-device-dropdown>

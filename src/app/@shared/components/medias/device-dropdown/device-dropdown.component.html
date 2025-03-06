@@ -1,0 +1,29 @@
+<div class="dropdown-container" #dropdownContainer>
+  <div class="button-container">
+    <button class="btn-flat chevron" (click)="toggleDropdown()">
+      <i
+        [ngClass]="{
+          'chevron-down': isOpen,
+          'chevron-top': !isOpen,
+        }"
+      ></i>
+    </button>
+    <ng-content></ng-content>
+  </div>
+
+  @if (isOpen) {
+    <div class="overlay" (click)="toggleDropdown(false)"></div>
+
+    <div class="dropdown-content" #dropdownContent (mouseleave)="toggleDropdown(false)">
+      @for (device of devices.values(); track device.deviceId) {
+        <a
+          href="#"
+          [ngClass]="{ selected: device.deviceId === deviceIdSelected }"
+          (click)="onChanceDevice(device.deviceId); $event.preventDefault()"
+        >
+          {{ device.label || 'Dispositivo desconhecido' }}
+        </a>
+      }
+    </div>
+  }
+</div>

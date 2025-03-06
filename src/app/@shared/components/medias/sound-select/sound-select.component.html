@@ -1,0 +1,9 @@
+<fk-device-dropdown
+  [devices]="soundDevices"
+  [deviceIdSelected]="deviceIdSelected"
+  (chanceDevice)="selectSoundDevice($event)"
+>
+  <button class="btn-flat midia-stream__mic">
+    <i class="sound"></i>
+  </button>
+</fk-device-dropdown>

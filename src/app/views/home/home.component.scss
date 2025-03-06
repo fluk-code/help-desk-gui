@@ -1,0 +1,9 @@
+.content {
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* Define duas colunas: uma com 2/3 da largura e outra com 1/3 */
+  gap: 1rem;
+
+  .player {
+    /* Ocupa a primeira coluna (por padrão, a primeira linha) */
+  }
+}

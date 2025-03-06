@@ -1,0 +1,56 @@
+@import '../../../../../assets/sass/icons/icons.scss';
+
+$room-status-size: 1rem;
+
+.component-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .list-container {
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: column;
+    justify-items: start;
+    align-items: start;
+
+    width: 100%;
+
+    overflow: auto;
+
+    & .room--active {
+      background-color: var(--quaternary-color);
+    }
+
+    .room {
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      gap: 0.5rem;
+
+      width: 100%;
+      padding: 0.35rem;
+
+      .room__status {
+        width: $room-status-size;
+
+        .visibility,
+        .visibility_off {
+          @include resize-icon($room-status-size);
+        }
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    :only-child {
+      width: 100%;
+    }
+  }
+}

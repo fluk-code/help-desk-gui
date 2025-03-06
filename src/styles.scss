@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import 'assets/sass/imports.scss';
+
+// Necessário corrigir no design guide
+.div__separator {
+  margin-top: 0.5rem !important;
+  margin-bottom: 2rem !important;
+}

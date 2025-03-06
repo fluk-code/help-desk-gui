@@ -1,0 +1,25 @@
+<div class="chat-container">
+  @if (activatedRoom) {
+    <div class="chat-content">
+      @for (message of messages; track message.timestamp) {
+        <div class="message" [ngClass]="{ 'message--self': message.isSelf }">
+          <span class="message-user">{{ message.peerId }}</span>
+          <span class="message-message">{{ message.message }}</span>
+          <span class="message-date">{{ message.timeAgo }}</span>
+        </div>
+      }
+    </div>
+
+    <form class="chat-actions" [formGroup]="form" (ngSubmit)="sendMessage()">
+      <div class="input-container">
+        <input type="text" formControlName="message" />
+      </div>
+
+      <button type="submit" class="btn-clear" [disabled]="form.invalid" (click)="sendMessage()">
+        <i class="send"></i>
+      </button>
+    </form>
+  } @else {
+    <p>Nenhuma sala selecionada</p>
+  }
+</div>

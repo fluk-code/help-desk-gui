@@ -1,0 +1,23 @@
+.input-container {
+  input {
+    appearance: none;
+    width: 100%;
+    font-size: 1.15rem;
+    padding: 0.675em 6em 0.675em 1em;
+    background-color: var(--background-color);
+
+    border: 1px solid var(--text-color);
+    border-radius: 0.25rem;
+
+    color: var(--text-color);
+    cursor: pointer;
+
+    &::-ms-expand {
+      display: none;
+    }
+
+    &:focus {
+      outline: none; /* Remove a linha de contorno padrão */
+    }
+  }
+}

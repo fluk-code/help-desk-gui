@@ -1,0 +1,21 @@
+@charset 'UTF-8';
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+// 1. Themes
+@import 'themes/theme.scss';
+
+// 2. Mixiins
+
+// 4. Components
+@import 'components/buttons.scss';
+@import 'components/input.scss';
+
+// 5. Icons
+@import 'icons/icons.scss';

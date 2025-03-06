@@ -1,0 +1,14 @@
+<fk-device-dropdown
+  [devices]="videoDevices"
+  [deviceIdSelected]="deviceIdSelected"
+  (chanceDevice)="selectVideoDevice($event)"
+>
+  <button class="btn-flat" (click)="toggleDisableVideo()">
+    <i
+      [ngClass]="{
+        cam: !isDisabled,
+        cam_off: isDisabled,
+      }"
+    ></i>
+  </button>
+</fk-device-dropdown>

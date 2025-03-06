@@ -1,0 +1,35 @@
+# System files
+.DS_Store
+Thumbs.db
+
+# Dev Container Environment
+.docker/zsh/history/
+
+#Node
+/node_modules
+.npmrcs
+.env
+npm-debug.log
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out

@@ -1,0 +1,95 @@
+@mixin button_actions {
+  &:hover {
+    filter: brightness(90%);
+  }
+
+  &:active {
+    filter: brightness(80%);
+  }
+}
+
+button {
+  background: none; /* Remove o fundo */
+  color: inherit; /* Usa a cor do texto do elemento pai */
+  border: none; /* Remove a borda */
+  font: inherit; /* Usa a fonte do elemento pai */
+  cursor: pointer; /* Garante que o cursor mude para "pointer" ao passar por cima */
+  outline: none; /* Remove a borda de foco (contorno) */
+  -webkit-appearance: none; /* Remove estilos padrão em navegadores WebKit (Chrome, Safari) */
+  -moz-appearance: none; /* Remove estilos padrão no Firefox */
+  appearance: none; /* Remove estilos padrão em navegadores modernos */
+
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s;
+
+  &:disabled {
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    background-color: transparent;
+
+    opacity: 0.5;
+
+    cursor: auto;
+
+    &:hover {
+    }
+  }
+}
+
+a {
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+button::-moz-focus-inner {
+  /* Remove a borda pontilhada no Firefox */
+  border: 0;
+}
+
+.btn-flat {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+
+  width: 3rem;
+  height: 3rem;
+  background-color: var(--quaternary-color);
+
+  border-radius: 8px;
+
+  transition: background-color 0.3s;
+
+  @include button_actions;
+}
+
+.btn {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: var(--background-color);
+
+  @include button_actions;
+}
+
+.btn-clear {
+  background-color: transparent;
+  color: var(--text-color);
+  cursor: pointer;
+
+  @include button_actions;
+
+  &:disabled {
+    border: none;
+  }
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--tertiary-color);
+  color: var(--tertiary-color);
+
+  @include button_actions;
+}

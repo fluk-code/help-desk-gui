@@ -1,0 +1,45 @@
+<header>SALA</header>
+
+<main class="content">
+  <div class="rooms">
+    <fk-list-rooms
+      (followRoom)="connectRoom($event)"
+      (unfollowRoom)="disconnectRoom($event)"
+    ></fk-list-rooms>
+  </div>
+
+  <div class="screen">
+    <div class="screen__share">
+      <fk-screen-share></fk-screen-share>
+      <fk-media-stream-control></fk-media-stream-control>
+    </div>
+
+    <div class="screen__control">
+      <button class="btn-flat">
+        <i
+          [ngClass]="{
+            screen_share: !isScreenShared,
+            stop_screen_share: isScreenShared,
+          }"
+        ></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="players">
+    <fk-media-stream-player></fk-media-stream-player>
+    @for (entry of peersOn.entries(); track entry[0]) {
+      @if (entry[0] === activatedRoom) {
+        @for (peer of entry[1]; track peer) {
+          <fk-peer-stream-player [peerId]="peer"></fk-peer-stream-player>
+        }
+      }
+    }
+  </div>
+
+  <div class="chat">
+    <fk-chat></fk-chat>
+  </div>
+</main>
+
+<footer></footer>

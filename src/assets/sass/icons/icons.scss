@@ -1,0 +1,74 @@
+$size: 1.5rem;
+
+@mixin icon($name) {
+  display: inline-block;
+  position: initial;
+  width: $size;
+  height: $size;
+  background: url('../../../assets/icons/svg/#{$name}');
+  background-repeat: no-repeat !important;
+  background-size: $size $size;
+  background-position: center;
+
+  filter: brightness(0) saturate(100%) invert(20%) sepia(0%) saturate(0%) hue-rotate(0deg);
+}
+
+@mixin resize-icon($size) {
+  width: $size;
+  height: $size;
+  background-size: $size $size;
+}
+
+.mic {
+  @include icon('mic.svg');
+}
+
+.mic_off {
+  @include icon('mic_off.svg');
+}
+
+.cam {
+  @include icon('cam.svg');
+}
+
+.cam_off {
+  @include icon('cam_off.svg');
+}
+
+.sound {
+  @include icon('sound.svg');
+}
+
+.screen_share {
+  @include icon('screen_share.svg');
+}
+
+.stop_screen_share {
+  @include icon('stop_screen_share.svg');
+}
+
+.chevron-top {
+  @include icon('chevron.svg');
+  transform: rotate(-90deg);
+}
+
+.chevron-down {
+  @include icon('chevron.svg');
+  transform: rotate(90deg);
+}
+
+.check {
+  @include icon('check.svg');
+}
+
+.visibility {
+  @include icon('visibility.svg');
+}
+
+.visibility_off {
+  @include icon('visibility_off.svg');
+}
+
+.send {
+  @include icon('send.svg');
+}

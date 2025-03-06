@@ -1,0 +1,23 @@
+<div class="component-container">
+  <div class="list-container">
+    @for (room of rooms.values(); track $index) {
+      <div class="room" [ngClass]="{ 'room--active': room === activatedRoom }">
+        <span class="room__status">
+          <a class="btn-clear" (click)="toggleFollowRoom(room)">
+            <i
+              [ngClass]="{
+                visibility_off: !isFollowed(room),
+                visibility: isFollowed(room),
+              }"
+            ></i>
+          </a>
+        </span>
+        <button href="" class="btn-clear" (click)="openRoom(room)">{{ room }}</button>
+      </div>
+    }
+  </div>
+
+  <div class="actions">
+    <button class="btn" (click)="createNewRoom()">Nova Sala</button>
+  </div>
+</div>
