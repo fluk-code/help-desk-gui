@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { MediaDevicesService } from '../../../services/media/media-devices.service';
 import { UserMediaStreamService } from '../../../services/media/user-media-stream.service';
+import { ActivatedRoomService } from '../../../services/room/activated-room.service';
+import { RoomId } from '../../../types/type';
 import { DeviceDropdownComponent } from '../device-dropdown/device-dropdown.component';
 
 @Component({
@@ -15,36 +17,74 @@ import { DeviceDropdownComponent } from '../device-dropdown/device-dropdown.comp
 export class CamSelectComponent implements OnInit {
   readonly videoDevices = new Map<string, MediaDeviceInfo>();
 
-  isDisabled = false;
-  deviceIdSelected!: string;
+  activatedRoom!: RoomId;
+
+  private readonly rooms = new Map<
+    RoomId,
+    {
+      isDisabled: boolean;
+      deviceIdSelected: string;
+    }
+  >();
 
   constructor(
     private readonly mediaDevicesService: MediaDevicesService,
-    private readonly userMediaStreamService: UserMediaStreamService
+    private readonly userMediaStreamService: UserMediaStreamService,
+    private readonly activatedRoomService: ActivatedRoomService
   ) {}
 
   ngOnInit() {
     this.loadDevices();
+    this.onActivatedRoom();
+  }
+
+  get isDisabled() {
+    const room = this.rooms.get(this.activatedRoom);
+
+    if (!room) {
+      return true;
+    }
+
+    return room.isDisabled;
   }
 
   async toggleDisableVideo() {
-    if (!this.isDisabled) {
-      await this.userMediaStreamService.disableVideo();
-    } else {
-      this.getDeviceSelected();
+    const room = this.rooms.get(this.activatedRoom);
+
+    if (!room) {
+      return;
     }
 
-    this.isDisabled = !this.isDisabled;
+    if (!room.isDisabled) {
+      room.isDisabled = true;
+      await this.userMediaStreamService.disableVideo(this.activatedRoom);
+    } else {
+      room.isDisabled = false;
+      this.getDeviceSelected();
+    }
   }
 
   async selectVideoDevice(deviceId: string) {
-    await this.userMediaStreamService.changeVideoDevice(deviceId);
-    this.deviceIdSelected = deviceId;
-    this.isDisabled = false;
+    const room = this.rooms.get(this.activatedRoom);
+
+    if (!room) {
+      return;
+    }
+
+    await this.userMediaStreamService.changeVideoDevice(this.activatedRoom, deviceId);
+
+    room.deviceIdSelected = deviceId;
+    room.isDisabled = false;
   }
 
   private getDeviceSelected() {
-    this.selectVideoDevice(this.deviceIdSelected);
+    const room = this.rooms.get(this.activatedRoom);
+
+    if (!room) {
+      return;
+    }
+
+    this.selectVideoDevice(room.deviceIdSelected);
   }
 
   private loadDevices() {
@@ -58,6 +98,20 @@ export class CamSelectComponent implements OnInit {
       }
 
       this.getDeviceSelected();
+    });
+  }
+
+  private onActivatedRoom() {
+    return this.activatedRoomService.activatedRoom$.subscribe((room: RoomId) => {
+      this.activatedRoom = room;
+      const roomState = this.rooms.get(room);
+
+      if (!roomState) {
+        this.rooms.set(room, {
+          isDisabled: true,
+          deviceIdSelected: this.videoDevices.keys().next().value ?? '',
+        });
+      }
     });
   }
 }

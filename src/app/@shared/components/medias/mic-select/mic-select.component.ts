@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { MediaDevicesService } from '../../../services/media/media-devices.service';
 import { UserMediaStreamService } from '../../../services/media/user-media-stream.service';
+import { RoomId } from '../../../types/type';
 import { DeviceDropdownComponent } from '../device-dropdown/device-dropdown.component';
 
 @Component({
@@ -15,8 +16,8 @@ import { DeviceDropdownComponent } from '../device-dropdown/device-dropdown.comp
 export class MicSelectComponent implements OnInit {
   readonly audioDevices = new Map<string, MediaDeviceInfo>();
 
-  isDisabled = false;
-  deviceIdSelected!: string;
+  @Input({ required: true })
+  activatedRoom!: RoomId;
 
   constructor(
     private readonly mediaDevicesService: MediaDevicesService,
@@ -27,7 +28,38 @@ export class MicSelectComponent implements OnInit {
     this.loadDevices();
   }
 
-  loadDevices() {
+  isDisabled() {
+    // return !!this.userMediaStreamService.getAudioDeviceRoom(this.activatedRoom);
+    return true;
+  }
+
+  getDeviceSelected() {
+    // const deviceSelected = this.userMediaStreamService.getAudioDeviceRoom(this.activatedRoom);
+
+    // if (typeof deviceSelected === 'boolean') {
+    //   return 'default';
+    // }
+
+    // return (deviceSelected.deviceId as ConstrainDOMStringParameters).exact as string;
+
+    return 'default';
+  }
+
+  async toggleDisableAudio() {
+    const isDisabled = this.isDisabled();
+
+    if (!isDisabled) {
+      await this.userMediaStreamService.disableAudio(this.activatedRoom);
+    } else {
+      this.getDeviceSelected();
+    }
+  }
+
+  async selectAudioDevice(deviceId: string) {
+    await this.userMediaStreamService.changeAudioDevice(this.activatedRoom, deviceId);
+  }
+
+  private loadDevices() {
     this.mediaDevicesService.audioInputDevices$().subscribe((devices: MediaDeviceInfo[]) => {
       devices.forEach((device) => {
         this.audioDevices.set(device.deviceId, device);
@@ -35,30 +67,11 @@ export class MicSelectComponent implements OnInit {
       if (this.audioDevices.size === 0) {
         return;
       }
-      const selectedDevice = this.getDeviceSelected();
-      if (!selectedDevice) {
-        this.selectAudioDevice(devices[0].deviceId);
-      }
+      // const selectedDevice = this.userMediaStreamService.getAudioDeviceRoom(this.activatedRoom);
+
+      // if (!selectedDevice) {
+      //   this.selectAudioDevice(devices[0].deviceId);
+      // }
     });
-  }
-
-  async toggleDisableAudio() {
-    if (!this.isDisabled) {
-      await this.userMediaStreamService.disableAudio();
-    } else {
-      this.getDeviceSelected();
-    }
-
-    this.isDisabled = !this.isDisabled;
-  }
-
-  async selectAudioDevice(deviceId: string) {
-    await this.userMediaStreamService.changeVideoDevice(deviceId);
-    this.deviceIdSelected = deviceId;
-    this.isDisabled = false;
-  }
-
-  private getDeviceSelected() {
-    return this.audioDevices.get(this.deviceIdSelected) ?? null;
   }
 }

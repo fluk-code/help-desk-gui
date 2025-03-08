@@ -49,7 +49,7 @@ export class PeerConnectionService {
     return this.iceStateSubject.asObservable();
   }
 
-  createPeerConnection(room: string, peerId: string, isOfferCreator: boolean): void {
+  async createPeerConnection(room: string, peerId: string, isOfferCreator: boolean) {
     const peerConnection = new RTCPeerConnection(rtcConfiguration);
     isOfferCreator && this.p2pChatService.createDataChannel(room, peerId, peerConnection);
 
@@ -105,7 +105,7 @@ export class PeerConnectionService {
   }
 
   async createOffer(room: string, peerId: string): Promise<void> {
-    this.createPeerConnection(room, peerId, true);
+    await this.createPeerConnection(room, peerId, true);
 
     const peerSubject = this.peers.get(peerId);
     const peerConnection = peerSubject?.value.peerConnection;
@@ -127,7 +127,7 @@ export class PeerConnectionService {
     peerId: string,
     offer: RTCSessionDescriptionInit
   ): Promise<void> {
-    this.createPeerConnection(room, peerId, false);
+    await this.createPeerConnection(room, peerId, false);
 
     const peerSubject = this.peers.get(peerId);
     const peerConnection = peerSubject?.value.peerConnection;

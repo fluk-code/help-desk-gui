@@ -1,13 +1,17 @@
+import { filter, Subscription, tap } from 'rxjs';
+
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 
 import { MediaStreamControlComponent } from '../../@shared/components/players/media-stream-control/media-stream-control.component';
-import { MediaStreamPlayerComponent } from '../../@shared/components/players/media-stream-player/media-stream-player.component';
 import { PeerStreamPlayerComponent } from '../../@shared/components/players/peer-stream-player/peer-stream-player.component';
+import { UserMediaStreamPlayerComponent } from '../../@shared/components/players/user-media-stream-player/user-media-stream-player.component';
 import { ChatComponent } from '../../@shared/components/room/chat/chat.component';
 import { ListRoomsComponent } from '../../@shared/components/room/list-rooms/list-rooms.component';
 import { ScreenShareComponent } from '../../@shared/components/room/screen-share/screen-share.component';
+import { BrowserService } from '../../@shared/services/browser/browser.service';
 import { DisplayMediaStreamService } from '../../@shared/services/media/display-media-stream.service';
+import { UserMediaStreamService } from '../../@shared/services/media/user-media-stream.service';
 import { PeerConnectionService } from '../../@shared/services/p2p/peer-connection.service';
 import { SelfIdService } from '../../@shared/services/p2p/self-id.service';
 import { ActivatedRoomService } from '../../@shared/services/room/activated-room.service';
@@ -20,7 +24,7 @@ import { RoomId, SelfId } from '../../@shared/types/type';
   imports: [
     CommonModule,
     MediaStreamControlComponent,
-    MediaStreamPlayerComponent,
+    UserMediaStreamPlayerComponent,
     PeerStreamPlayerComponent,
     ChatComponent,
     ListRoomsComponent,
@@ -35,8 +39,12 @@ export class RoomsComponent implements OnDestroy {
 
   isScreenShared = false;
 
+  private userMediaStreamSubscription = new Subscription();
+
   constructor(
     private readonly cdRef: ChangeDetectorRef,
+    private readonly browserService: BrowserService,
+    private readonly userMediaStreamService: UserMediaStreamService,
     private readonly displayMediaStreamService: DisplayMediaStreamService,
     private readonly signalingClientServicer: SignalingClientService,
     private readonly peerConnectionService: PeerConnectionService,
@@ -44,11 +52,12 @@ export class RoomsComponent implements OnDestroy {
     private readonly selfIdService: SelfIdService
   ) {}
 
-  ngOnInit(): void {
-    this.onActivatedRoom();
-  }
+  ngOnInit(): void {}
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    this.onActivatedRoom();
+    this.onIsActiveWindow();
+  }
 
   toggleShareScreen(room: string): void {
     if (this.isScreenShared) {
@@ -77,6 +86,7 @@ export class RoomsComponent implements OnDestroy {
     this.activatedRoomService.activatedRoom$.subscribe((roomId) => {
       console.log('Activated room:', roomId);
       this.activatedRoom = roomId;
+      this.onUserMediaStream();
     });
   }
 
@@ -147,6 +157,26 @@ export class RoomsComponent implements OnDestroy {
         this.cdRef.detectChanges();
       }
     });
+  }
+
+  private onIsActiveWindow(): void {
+    this.browserService.isActiveWindow$().subscribe((isActive) => {
+      console.log('isActiveWindow:', isActive);
+    });
+  }
+
+  private onUserMediaStream(): void {
+    console.log('on user media stream', this.activatedRoom);
+
+    this.userMediaStreamSubscription.unsubscribe();
+    this.userMediaStreamSubscription = new Subscription();
+
+    this.userMediaStreamService
+      .mediaStream$(this.activatedRoom)
+
+      .subscribe((mediaStream) => {
+        this.peerConnectionService.addVideoTrack(this.activatedRoom, mediaStream);
+      });
   }
 
   ngOnDestroy(): void {

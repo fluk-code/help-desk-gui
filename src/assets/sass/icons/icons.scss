@@ -35,6 +35,10 @@ $size: 1.5rem;
   @include icon('cam_off.svg');
 }
 
+.hangout_video_off {
+  @include icon('hangout_video_off.svg');
+}
+
 .sound {
   @include icon('sound.svg');
 }

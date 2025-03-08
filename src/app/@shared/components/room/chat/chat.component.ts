@@ -9,6 +9,7 @@ import { TimeAgoPipe } from '../../../pipes/time-ago.pipe';
 import { P2PChatMessage, P2PChatService } from '../../../services/p2p/p2p-chat.service';
 import { SelfIdService } from '../../../services/p2p/self-id.service';
 import { ActivatedRoomService } from '../../../services/room/activated-room.service';
+import { RoomId } from '../../../types/type';
 
 type ChatMessage = P2PChatMessage & {
   timeAgo: string;
@@ -22,7 +23,8 @@ type ChatMessage = P2PChatMessage & {
   styleUrl: './chat.component.scss',
 })
 export class ChatComponent implements OnInit {
-  activatedRoom!: string;
+  activatedRoom!: RoomId;
+
   messages: ChatMessage[] = [];
 
   form!: FormGroup;
@@ -63,7 +65,6 @@ export class ChatComponent implements OnInit {
     this.chatSub = new Subscription();
 
     const [chatMessages$, messages] = this.p2pChatService.chatMessages$(this.activatedRoom);
-    this.messages = [];
     this.messages = messages.map((message) => ({
       ...message,
       timeAgo: timeAgo(message.timestamp),
@@ -75,7 +76,10 @@ export class ChatComponent implements OnInit {
           ...message,
           timeAgo: timeAgo(message.timestamp),
         });
-        this.cdRef.markForCheck();
+
+        this.messages = [...this.messages].sort((a, b) => a.timestamp - b.timestamp);
+
+        this.cdRef.detectChanges();
       })
     );
   }
@@ -94,14 +98,12 @@ export class ChatComponent implements OnInit {
     interval(inOneMinute)
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
-        console.log('trestea');
-
         this.messages = this.messages.map((message) => ({
           ...message,
           timeAgo: timeAgo(message.timestamp),
         }));
 
-        this.cdRef.markForCheck();
+        this.cdRef.detectChanges();
       });
   }
 }

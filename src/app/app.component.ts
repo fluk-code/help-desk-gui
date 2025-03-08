@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
+import { BrowserService } from './@shared/services/browser/browser.service';
 
 @Component({
   selector: 'app-root',
@@ -8,9 +10,10 @@ import { RouterOutlet } from '@angular/router';
   imports: [CommonModule, RouterOutlet],
   template: '<router-outlet></router-outlet>',
 })
-export class AppComponent {
-  // constructor(private readonly mediaService: MediaService) {}
-  // ngOnInit(): void {
-  //   this.mediaService.initializeLocalStream();
-  // }
+export class AppComponent implements OnInit {
+  constructor(private readonly browserService: BrowserService) {}
+
+  ngOnInit(): void {
+    this.browserService.initZone();
+  }
 }

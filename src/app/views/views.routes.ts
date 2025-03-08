@@ -7,7 +7,7 @@ export const viewsRoutes: Routes = [
     path: '',
     component: ViewsComponent,
     children: [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: '', redirectTo: 'rooms', pathMatch: 'full' },
       {
         path: 'home',
         loadComponent: () => import('./home/home.component').then((c) => c.HomeComponent),

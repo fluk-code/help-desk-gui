@@ -2,7 +2,7 @@ import { Observable, Subject } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-import { PeerId, RoomId, Timestamp } from '../../types/type';
+import { MessagesBehaviorKey, PeerId, RoomId, Timestamp } from '../../types/type';
 
 export type P2PChatMessage = {
   peerId: string;
@@ -10,8 +10,6 @@ export type P2PChatMessage = {
   timestamp: number;
   isSelf?: boolean;
 };
-
-type MessagesBehaviorKey = `${PeerId}-${Timestamp}`;
 
 @Injectable({
   providedIn: 'root',
@@ -40,8 +38,6 @@ export class P2PChatService {
     try {
       const dataChannel = peerConnection.createDataChannel('chatChannel');
       this.configureChatDataChannel(room, peerId, dataChannel);
-
-      console.log(`Data channel created for peer ${peerId}`);
     } catch (error) {
       console.error(`Failed to create data channel for peer ${peerId}:`, error);
     }
@@ -53,13 +49,15 @@ export class P2PChatService {
     dataChannel.onopen = () => {
       console.log('Data channel is open for peer:', peerId);
       console.log('Estado do canal de dados:', dataChannel.readyState);
+
+      this.sendMessagesBehavior(room, peerId);
     };
 
     dataChannel.onmessage = (event) => {
-      const message = event.data;
+      const { message, timestamp } = JSON.parse(event.data);
       let messageSubject = this.messageSubject.get(room);
 
-      const p2pMessage = { peerId, message, timestamp: Date.now(), isSelf: false };
+      const p2pMessage = { peerId, message, timestamp, isSelf: false };
       const mapMessages =
         this.messagesBehavior.get(room) || new Map<MessagesBehaviorKey, P2PChatMessage>();
       mapMessages.set(`${p2pMessage.peerId}-${p2pMessage.timestamp}`, p2pMessage);
@@ -108,11 +106,16 @@ export class P2PChatService {
       if (channel.readyState !== 'open') {
         return;
       }
-      channel.send(message);
+      channel.send(
+        JSON.stringify({
+          message,
+          timestamp: Date.now(),
+        })
+      );
     });
   }
 
-  sendMessagesBehavior(room: string): void {
+  sendMessagesBehavior(room: string, peerId: string): void {
     const messagesBehavior = this.messagesBehavior.get(room);
 
     if (!messagesBehavior) {
@@ -131,14 +134,18 @@ export class P2PChatService {
       return;
     }
 
-    channels.forEach((channel) => {
-      if (channel.readyState !== 'open') {
-        return;
-      }
+    const channel = channels.get(peerId);
+    if (channel?.readyState !== 'open') {
+      return;
+    }
 
-      selfMessages.forEach((message) => {
-        channel.send(message.message);
-      });
+    selfMessages.forEach(({ message, timestamp }) => {
+      channel.send(
+        JSON.stringify({
+          message,
+          timestamp,
+        })
+      );
     });
   }
 

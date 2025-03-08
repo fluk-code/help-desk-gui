@@ -23,11 +23,16 @@ export class PeerStreamPlayerComponent implements AfterViewInit {
   }
 
   onPeerConnection(): void {
-    this.peerConnectionService.peerConnection$(this.peerId)?.subscribe((peerConnection) => {
-      if (peerConnection.remoteStream) {
-        this.videoElementRef.nativeElement.srcObject = new MediaStream([
-          peerConnection.remoteStream,
-        ]);
+    this.peerConnectionService.peerConnection$(this.peerId)?.subscribe((subject) => {
+      const transceivers = subject.peerConnection.getTransceivers();
+      for (const transceiver of transceivers) {
+        if (transceiver.receiver && transceiver.receiver.track) {
+          console.log('transceiver receiver track', transceiver.receiver.track);
+
+          this.videoElementRef.nativeElement.srcObject = new MediaStream([
+            transceiver.receiver.track,
+          ]);
+        }
       }
     });
   }

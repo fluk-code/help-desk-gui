@@ -29,7 +29,7 @@ export class DisplayMediaStreamService {
       this.mediaStreamSubject.set(room, subject);
     }
 
-    return subject;
+    return subject.asObservable();
   }
 
   async activateDisplayMediaStream(room: string): Promise<void> {

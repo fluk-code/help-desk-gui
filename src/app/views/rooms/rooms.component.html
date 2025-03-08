@@ -28,6 +28,7 @@
 
   <div class="players">
     <fk-media-stream-player></fk-media-stream-player>
+
     @for (entry of peersOn.entries(); track entry[0]) {
       @if (entry[0] === activatedRoom) {
         @for (peer of entry[1]; track peer) {
@@ -37,9 +38,7 @@
     }
   </div>
 
-  <div class="chat">
-    <fk-chat></fk-chat>
-  </div>
+  <fk-chat class="chat"></fk-chat>
 </main>
 
 <footer></footer>

@@ -1,6 +1,6 @@
 <fk-device-dropdown
   [devices]="audioDevices"
-  [deviceIdSelected]="deviceIdSelected"
+  [deviceIdSelected]="getDeviceSelected()"
   (chanceDevice)="selectAudioDevice($event)"
 >
   <button class="btn-flat midia-stream__mic" (click)="toggleDisableAudio()">
